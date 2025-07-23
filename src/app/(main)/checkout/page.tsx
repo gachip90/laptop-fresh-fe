@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import useSWR from "swr";
-import { Button, Radio, message, Card, Modal, Form, Input } from "antd";
+import { Button, Radio, message, Card, Modal, Form, Input, Spin } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createOrderProduct, fetcher } from "@/lib/api/api";
 
@@ -30,6 +30,7 @@ export default function CheckoutPage() {
       setLoading(true);
       const receiver = await form.validateFields();
       await createOrderProduct({
+        productName: product?.productName,
         customerName: receiver.customerName,
         email: receiver.email,
         phone: receiver.phone,
@@ -57,7 +58,9 @@ export default function CheckoutPage() {
         <Card>
           <h2 className="font-semibold mb-2">Thông tin đơn hàng</h2>
           {isLoading ? (
-            <div className="text-center py-8">Đang tải sản phẩm...</div>
+            <div className="flex justify-center items-center h-32">
+              <Spin size="small" />
+            </div>
           ) : error || !product ? (
             <div className="text-center text-red-500 py-8">
               Không tìm thấy sản phẩm.
@@ -73,7 +76,15 @@ export default function CheckoutPage() {
           <div className="flex justify-between font-semibold border-t pt-2">
             <span>Tổng tiền:</span>
             <span className="text-blue-600">
-              {product?.price?.toLocaleString("vi-VN") || 0}₫
+              {product?.price
+                ? product.price
+                    .toLocaleString("vi-VN", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })
+                    .replace(/,/g, ".")
+                : 0}
+              ₫
             </span>
           </div>
         </Card>

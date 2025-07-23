@@ -17,7 +17,7 @@ import { cancelOrderService, fetcher } from "@/lib/api/api";
 import dayjs from "dayjs";
 import { useState } from "react";
 
-export default function BookingHistory() {
+export default function AccountBookingHistory() {
   const { user } = useAuth();
   const { data, error, isLoading, mutate } = useSWR(
     `/orders/services/get/${user?.userId}`,

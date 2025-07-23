@@ -1,26 +1,26 @@
 "use client";
 
 import { Tabs } from "antd";
-import BookingHistory from "@/components/account/booking-history";
-import Feedback from "@/components/account/feedback";
-import Profile from "@/components/account/profile";
+import AccountBookingHistory from "@/components/account/booking-history";
+import AccountFeedback from "@/components/account/feedback";
+import AccountProfile from "@/components/account/profile";
 
 export default function AccountPage() {
   const items = [
     {
       key: "1",
       label: "Thông tin cá nhân",
-      children: <Profile />,
+      children: <AccountProfile />,
     },
     {
       key: "2",
       label: "Lịch sử đặt lịch",
-      children: <BookingHistory />,
+      children: <AccountBookingHistory />,
     },
     {
       key: "3",
       label: "Phản hồi",
-      children: <Feedback />,
+      children: <AccountFeedback />,
     },
   ];
 

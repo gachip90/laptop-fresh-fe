@@ -15,6 +15,7 @@ import Feedbacks from "@/components/admin/feedbacks";
 
 import { fetcher } from "@/lib/api/api";
 import useSWR from "swr";
+import OrderProducts from "@/components/admin/order-products";
 
 export default function AdminPage() {
   const { data, error, isLoading } = useSWR("/admin/stats", fetcher);
@@ -32,16 +33,21 @@ export default function AdminPage() {
     },
     {
       key: "3",
-      label: "Đặt lịch",
+      label: "Đơn đặt lịch",
       children: <OrderServices />,
     },
     {
       key: "4",
+      label: "Đơn đặt hàng",
+      children: <OrderProducts />,
+    },
+    {
+      key: "5",
       label: "Phản hồi",
       children: <Feedbacks />,
     },
     {
-      key: "5",
+      key: "6",
       label: "Người dùng",
       children: <Users />,
     },
@@ -60,12 +66,17 @@ export default function AdminPage() {
       icon: <CalendarOutlined className="!text-white text-xl" />,
       bgColor: "bg-green-500",
     },
-    // {
-    //   title: "Doanh thu tháng",
-    //   value: "12.5M VND",
-    //   icon: <BarChartOutlined className="!text-white text-xl" />,
-    //   bgColor: "bg-orange-500",
-    // },
+    {
+      title: "Tổng doanh thu",
+      value: `${Number(data?.stats.totalRevenue || 0)
+        .toLocaleString("vi-VN", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })
+        .replace(/,/g, ".")}`,
+      icon: <BarChartOutlined className="!text-white text-xl" />,
+      bgColor: "bg-orange-500",
+    },
     {
       title: "Dịch vụ hoạt động",
       value: `${data?.stats.activeServices || 0}`,
@@ -86,7 +97,7 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="max-w-7xl mx-auto px-4 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {statsData.map((stat, index) => (
               <div
                 key={index}

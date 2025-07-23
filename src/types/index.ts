@@ -33,6 +33,7 @@ export interface OrderServiceData {
 
 export interface OrderProductData {
   id?: string;
+  productName: string;
   customerName: string;
   email: string;
   phone: string;
