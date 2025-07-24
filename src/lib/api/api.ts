@@ -4,6 +4,7 @@ import {
   LoginData,
   OrderProductData,
   OrderServiceData,
+  ProductData,
   RegisterData,
   ServiceData,
   UserData,
@@ -268,6 +269,56 @@ export const createOrderProduct = async (
 
   if (!res.ok) {
     throw Error(data.message || "Đặt hàng thành công!");
+  }
+
+  return data;
+};
+
+export const createProduct = async (productData: ProductData) => {
+  const res = await fetch(`${API_URL}/products/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(productData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw Error(data.message || "Thêm sản phẩm thành công!");
+  }
+
+  return data;
+};
+
+export const updateProduct = async (id: string, productData: ProductData) => {
+  const res = await fetch(`${API_URL}/products/update/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(productData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw Error(data.message || "Cập nhật sản phẩm thành công!");
+  }
+
+  return data;
+};
+
+export const deleteProduct = async (id: string) => {
+  const res = await fetch(`${API_URL}/products/delete/${id}`, {
+    method: "DELETE",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw Error(data.message || "Xóa sản phẩm thành công!");
   }
 
   return data;

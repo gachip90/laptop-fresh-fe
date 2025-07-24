@@ -67,6 +67,19 @@ export interface BlogData {
   publishedDate?: string;
 }
 
+export interface ProductData {
+  id: string;
+  productName: string;
+  brand: string;
+  price: number;
+  originalPrice?: number;
+  discount?: number;
+  image: string;
+  category: string;
+  isNew?: boolean;
+  isBestSeller?: boolean;
+}
+
 export interface ProductCategory {
   id: string;
   name: string;

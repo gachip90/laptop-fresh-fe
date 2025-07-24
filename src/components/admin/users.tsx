@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/api/api";
 import { Card, Spin, Tag } from "antd";
 
-export default function Users() {
+export default function AdminUser() {
   const { data, error, isLoading } = useSWR("/users/getAll", fetcher);
   console.log("data", data);
 

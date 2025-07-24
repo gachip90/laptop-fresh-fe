@@ -1,5 +1,7 @@
 "use client";
 
+import useSWR from "swr";
+import { fetcher } from "@/lib/api/api";
 import { Tabs } from "antd";
 import {
   UserOutlined,
@@ -7,15 +9,13 @@ import {
   BarChartOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import Services from "@/components/admin/services";
-import Blogs from "@/components/admin/blogs";
-import OrderServices from "@/components/admin/order-services";
-import Users from "@/components/admin/users";
-import Feedbacks from "@/components/admin/feedbacks";
-
-import { fetcher } from "@/lib/api/api";
-import useSWR from "swr";
-import OrderProducts from "@/components/admin/order-products";
+import AdminService from "@/components/admin/services";
+import AdminBlog from "@/components/admin/blogs";
+import AdminUser from "@/components/admin/users";
+import AdminFeedback from "@/components/admin/feedbacks";
+import AdminProduct from "@/components/admin/products";
+import AdminOrderService from "@/components/admin/order-services";
+import AdminOrderProduct from "@/components/admin/order-products";
 
 export default function AdminPage() {
   const { data, error, isLoading } = useSWR("/admin/stats", fetcher);
@@ -24,32 +24,37 @@ export default function AdminPage() {
     {
       key: "1",
       label: "Dịch vụ",
-      children: <Services />,
+      children: <AdminService />,
     },
     {
       key: "2",
-      label: "Bài viết",
-      children: <Blogs />,
+      label: "Sản phẩm",
+      children: <AdminProduct />,
     },
     {
       key: "3",
-      label: "Đơn đặt lịch",
-      children: <OrderServices />,
+      label: "Bài viết",
+      children: <AdminBlog />,
     },
     {
       key: "4",
-      label: "Đơn đặt hàng",
-      children: <OrderProducts />,
+      label: "Đơn đặt lịch",
+      children: <AdminOrderService />,
     },
     {
       key: "5",
-      label: "Phản hồi",
-      children: <Feedbacks />,
+      label: "Đơn đặt hàng",
+      children: <AdminOrderProduct />,
     },
     {
       key: "6",
+      label: "Phản hồi",
+      children: <AdminFeedback />,
+    },
+    {
+      key: "7",
       label: "Người dùng",
-      children: <Users />,
+      children: <AdminUser />,
     },
   ];
 
