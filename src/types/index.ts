@@ -23,12 +23,18 @@ export interface UserData {
 
 export interface OrderServiceData {
   id?: string;
-  serviceType: string;
   fullName: string;
   phone: string;
+  serviceType: string;
   date: string;
+  time: string;
   location: string;
-  status: "pending" | "confirmed" | "completed" | "canceled";
+  status: string;
+  userId?: string;
+  studentId: string;
+  email: string;
+  serviceDetail?: string;
+  deviceInfo?: string;
 }
 
 export interface OrderProductData {
@@ -39,6 +45,7 @@ export interface OrderProductData {
   phone: string;
   address: string;
   totalPrice: string;
+  userId?: string;
 }
 
 export interface FeedbackData {

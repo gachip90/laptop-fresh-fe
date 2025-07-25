@@ -46,11 +46,18 @@ export function BookingForm({
       }
 
       const payload: OrderServiceData = {
+        userId: user?.userId,
         fullName: values.fullName,
         phone: values.phone,
         serviceType: values.serviceType,
+        studentId: values.studentId,
+        email: values.email,
+        serviceDetail: values.serviceDetail,
+        deviceInfo: values.deviceInfo,
         date: values.date,
+        time: values.time,
         location: values.location,
+        status: "pending",
       };
 
       // Gọi API

@@ -12,8 +12,9 @@ import {
   message,
   Spin,
   Popconfirm,
+  Upload,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { fetcher, createBlog, updateBlog, deleteBlog } from "@/lib/api/api";
@@ -29,6 +30,7 @@ export default function Blogs() {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [editingBlog, setEditingBlog] = useState<BlogData | null>(null);
   const [form] = Form.useForm();
+  const [imageFileList, setImageFileList] = useState<any[]>([]); // Quản lý file ảnh
 
   const { data, error, isLoading, mutate } = useSWR("/blogs/getAll", fetcher);
 
@@ -37,11 +39,26 @@ export default function Blogs() {
     const formData: Blog = {
       title: record.title,
       description: record.description,
+      image: (record as any).image || '',
       category: record.category,
       author: record.author,
       publishedDate: record.publishedDate,
+      content: record.content,
     };
     form.setFieldsValue(formData);
+
+    if ((record as any).image) {
+      setImageFileList([
+        {
+          uid: '-1',
+          name: 'Ảnh hiện tại',
+          status: 'done',
+          url: (record as any).image,
+        },
+      ]);
+    } else {
+      setImageFileList([]);
+    }
     setIsModalOpen(true);
   };
 
@@ -62,7 +79,31 @@ export default function Blogs() {
   const handleAddBlog = () => {
     setEditingBlog(null);
     form.resetFields();
+    setImageFileList([]);
     setIsModalOpen(true);
+  };
+
+
+  const handleImageChange = async ({ fileList }: any) => {
+    if (fileList.length > 0 && fileList[0].originFileObj) {
+      const file = fileList[0].originFileObj;
+      const toBase64 = (file: File) =>
+        new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+        });
+      const base64 = await toBase64(file);
+      setImageFileList([
+        {
+          ...fileList[0],
+          url: base64,
+        },
+      ]);
+    } else {
+      setImageFileList(fileList);
+    }
   };
 
   const handleModalOk = () => {
@@ -71,20 +112,26 @@ export default function Blogs() {
       .then(async (values) => {
         try {
           setLoading(true);
-
+          let imageBase64 = '1';
+          if (imageFileList.length > 0) {
+            imageBase64 = imageFileList[0].url || '';
+          }
+          const submitData = {
+            ...values,
+            image: imageBase64,
+          };
+          console.log("submitData:", submitData);
           if (editingBlog) {
-            // Update existing Blog
-            await updateBlog(editingBlog.id!, values);
+            await updateBlog(editingBlog.id!, submitData);
             message.success("Cập nhật bài viết thành công!");
           } else {
-            // Create new Blog
-            await createBlog(values);
+            await createBlog(submitData);
             message.success("Thêm bài viết thành công!");
           }
-
           setIsModalOpen(false);
           form.resetFields();
           setEditingBlog(null);
+          setImageFileList([]);
           mutate();
         } catch (error) {
           console.error("Có lỗi xảy ra:", error);
@@ -249,18 +296,54 @@ export default function Blogs() {
             <Input placeholder="Nhập tiêu đề" />
           </Form.Item>
 
-          <Form.Item
-            label={<span className="font-semibold">Danh mục</span>}
-            name="category"
-            rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
-          >
-            <Select placeholder="Chọn danh mục">
-              <Option value="Khuyến mãi">Khuyến mãi</Option>
-              <Option value="Bảo dưỡng">Bảo dưỡng</Option>
-              <Option value="Mẹo vặt">Mẹo vặt</Option>
-              <Option value="Nâng cấp">Nâng cấp</Option>
-            </Select>
-          </Form.Item>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Form.Item
+              label={<span className="font-semibold">Ảnh bài viết</span>}
+              required={false}
+            >
+              <Upload
+                listType="picture"
+                fileList={imageFileList}
+                beforeUpload={file => {
+                  const reader = new FileReader();
+                  reader.readAsDataURL(file);
+                  reader.onload = () => {
+                    setImageFileList([
+                      {
+                        uid: file.uid,
+                        name: file.name,
+                        status: "done",
+                        url: reader.result as string,
+                        originFileObj: file,
+                      },
+                    ]);
+                  };
+                  return false;
+                }}
+                onRemove={() => {
+                  setImageFileList([]);
+                }}
+                maxCount={1}
+                accept="image/*"
+              >
+                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+              </Upload>
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="font-semibold">Danh mục</span>}
+              name="category"
+              rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
+            >
+              <Select placeholder="Chọn danh mục">
+                <Option value="Khuyến mãi">Khuyến mãi</Option>
+                <Option value="Bảo dưỡng">Bảo dưỡng</Option>
+                <Option value="Mẹo vặt">Mẹo vặt</Option>
+                <Option value="Nâng cấp">Nâng cấp</Option>
+              </Select>
+            </Form.Item>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
@@ -282,13 +365,26 @@ export default function Blogs() {
             </Form.Item>
           </div>
 
+
+
           <Form.Item
             label={<span className="font-semibold">Mô tả</span>}
             name="description"
           >
             <Input.TextArea
               placeholder="Nhập mô tả bài viết (tùy chọn)"
-              rows={3}
+              rows={2}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={<span className="font-semibold">Nội dung bài viết</span>}
+            name="content"
+            rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết!" }]}
+          >
+            <Input.TextArea
+              placeholder="Nhập nội dung bài viết"
+              rows={4}
             />
           </Form.Item>
         </Form>

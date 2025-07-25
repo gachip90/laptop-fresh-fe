@@ -38,13 +38,11 @@ export function Blogs() {
   const router = useRouter();
 
   const { data, error, isLoading } = useSWR("/blogs/getAll", fetcher);
-  console.log("data", data);
 
   const slug = data?.blogs.map((item: any, index: any) => {
     return item.slug;
   });
 
-  console.log("slug", slug);
 
   // Function to create slug from title or use existing slug
 
@@ -101,11 +99,10 @@ export function Blogs() {
           <div
             key={category.key}
             onClick={() => setActiveCategory(category.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
-              activeCategory === category.key
-                ? "bg-blue-500 text-white shadow-lg"
-                : "bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-500"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${activeCategory === category.key
+              ? "bg-blue-500 text-white shadow-lg"
+              : "bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-500"
+              }`}
           >
             <span>{category.icon}</span>
             {category.label}
@@ -118,9 +115,8 @@ export function Blogs() {
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           {activeCategory === "all"
             ? "Tất cả bài viết"
-            : `Bài viết về ${
-                categories.find((cat) => cat.key === activeCategory)?.label
-              }`}
+            : `Bài viết về ${categories.find((cat) => cat.key === activeCategory)?.label
+            }`}
           {searchValue && ` - Kết quả tìm kiếm: "${searchValue}"`}
         </h2>
 

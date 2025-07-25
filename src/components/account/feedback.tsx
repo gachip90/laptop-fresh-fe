@@ -57,12 +57,12 @@ export default function Feedbacks() {
           >
             <Select
               size="large"
-              placeholder="Góp ý về dịch vụ"
+              placeholder="Loại dịch vụ"
               className="w-full"
             >
-              <Option value="service">Góp ý về dịch vụ</Option>
-              <Option value="technical">Vấn đề kỹ thuật</Option>
-              <Option value="booking">Vấn đề đặt lịch</Option>
+              <Option value="service">Dịch vụ</Option>
+              <Option value="technical">Kỹ thuật</Option>
+              <Option value="booking">Đặt lịch</Option>
               <Option value="other">Khác</Option>
             </Select>
           </Form.Item>

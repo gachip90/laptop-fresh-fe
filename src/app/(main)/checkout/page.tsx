@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Button, Radio, message, Card, Modal, Form, Input, Spin } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createOrderProduct, fetcher } from "@/lib/api/api";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -14,6 +15,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
+  const { user } = useAuth();
 
   const { data, error, isLoading } = useSWR(
     productId ? `/products/get/${productId}` : null,
@@ -36,6 +38,7 @@ export default function CheckoutPage() {
         phone: receiver.phone,
         address: receiver.address,
         totalPrice: product?.price,
+        userId: user?.userId,
       });
       setModalOpen(false);
       message.success(
@@ -78,11 +81,11 @@ export default function CheckoutPage() {
             <span className="text-blue-600">
               {product?.price
                 ? product.price
-                    .toLocaleString("vi-VN", {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })
-                    .replace(/,/g, ".")
+                  .toLocaleString("vi-VN", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })
+                  .replace(/,/g, ".")
                 : 0}
               ₫
             </span>

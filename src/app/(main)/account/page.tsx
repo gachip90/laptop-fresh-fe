@@ -1,7 +1,8 @@
 "use client";
 
 import { Tabs } from "antd";
-import AccountBookingHistory from "@/components/account/booking-history";
+import AccountOrderServices from "@/components/account/order-services";
+import AccountOrderProducts from "@/components/account/order-products";
 import AccountFeedback from "@/components/account/feedback";
 import AccountProfile from "@/components/account/profile";
 
@@ -15,10 +16,15 @@ export default function AccountPage() {
     {
       key: "2",
       label: "Lịch sử đặt lịch",
-      children: <AccountBookingHistory />,
+      children: <AccountOrderServices />,
     },
     {
       key: "3",
+      label: "Lịch sử đặt hàng",
+      children: <AccountOrderProducts />,
+    },
+    {
+      key: "4",
       label: "Phản hồi",
       children: <AccountFeedback />,
     },

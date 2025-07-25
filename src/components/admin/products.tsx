@@ -13,8 +13,9 @@ import {
   message,
   Spin,
   Popconfirm,
+  Upload,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -34,6 +35,7 @@ export default function AdminProduct() {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form] = Form.useForm();
+  const [imageFileList, setImageFileList] = useState<any[]>([]); // Quản lý file ảnh
 
   const { data, error, isLoading, mutate } = useSWR(
     "/products/getAll",
@@ -47,8 +49,20 @@ export default function AdminProduct() {
       category: record.category,
       originalPrice: record.originalPrice,
       discount: record.discount,
-      price: record.price,
     });
+
+    if ((record as any).image) {
+      setImageFileList([
+        {
+          uid: '-1',
+          name: 'Ảnh hiện tại',
+          status: 'done',
+          url: (record as any).image,
+        },
+      ]);
+    } else {
+      setImageFileList([]);
+    }
     setIsModalOpen(true);
   };
 
@@ -68,6 +82,7 @@ export default function AdminProduct() {
   const handleAddProduct = () => {
     setEditingProduct(null);
     form.resetFields();
+    setImageFileList([]);
     setIsModalOpen(true);
   };
 
@@ -77,16 +92,25 @@ export default function AdminProduct() {
       .then(async (values) => {
         try {
           setLoading(true);
+          let imageBase64 = '';
+          if (imageFileList.length > 0) {
+            imageBase64 = imageFileList[0].url || '';
+          }
+          const submitData = {
+            ...values,
+            image: imageBase64,
+          };
           if (editingProduct) {
-            await updateProduct(editingProduct.id, values);
+            await updateProduct(editingProduct.id, submitData);
             message.success("Cập nhật sản phẩm thành công!");
           } else {
-            await createProduct(values);
+            await createProduct(submitData);
             message.success("Thêm sản phẩm thành công!");
           }
           setIsModalOpen(false);
           form.resetFields();
           setEditingProduct(null);
+          setImageFileList([]);
           mutate();
         } catch (error) {
           message.error("Có lỗi xảy ra, vui lòng thử lại!");
@@ -94,7 +118,7 @@ export default function AdminProduct() {
           setLoading(false);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const handleModalCancel = () => {
@@ -130,14 +154,6 @@ export default function AdminProduct() {
       key: "discount",
       className: "text-gray-600",
       render: (value: number) => (value ? value + "%" : "0%"),
-    },
-    {
-      title: "Giá",
-      dataIndex: "price",
-      key: "price",
-      className: "text-gray-700 font-semibold",
-      render: (value: number) =>
-        value ? value.toLocaleString("vi-VN").replace(/,/g, ".") + "₫" : "0₫",
     },
     {
       title: "Thao tác",
@@ -267,7 +283,39 @@ export default function AdminProduct() {
               ))}
             </Select>
           </Form.Item>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Form.Item
+            label={<span className="font-semibold">Ảnh sản phẩm</span>}
+            required={false}
+          >
+            <Upload
+              listType="picture"
+              fileList={imageFileList}
+              beforeUpload={file => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                  setImageFileList([
+                    {
+                      uid: file.uid,
+                      name: file.name,
+                      status: "done",
+                      url: reader.result as string,
+                      originFileObj: file,
+                    },
+                  ]);
+                };
+                return false;
+              }}
+              onRemove={() => {
+                setImageFileList([]);
+              }}
+              maxCount={1}
+              accept="image/*"
+            >
+              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+            </Upload>
+          </Form.Item>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
               label={<span className="font-semibold">Giá gốc</span>}
               name="originalPrice"
@@ -281,13 +329,6 @@ export default function AdminProduct() {
               rules={[{ required: true, message: "Vui lòng nhập khuyến mãi!" }]}
             >
               <Input placeholder="VD: 10" />
-            </Form.Item>
-            <Form.Item
-              label={<span className="font-semibold">Giá</span>}
-              name="price"
-              rules={[{ required: true, message: "Vui lòng nhập giá!" }]}
-            >
-              <Input placeholder="VD: 900.000" />
             </Form.Item>
           </div>
         </Form>

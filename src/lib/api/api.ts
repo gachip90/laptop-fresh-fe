@@ -4,7 +4,6 @@ import {
   LoginData,
   OrderProductData,
   OrderServiceData,
-  ProductData,
   RegisterData,
   ServiceData,
   UserData,
@@ -12,7 +11,6 @@ import {
 
 const API_URL = "http://localhost:5000/api";
 
-// Hàm fetcher cho useSWR
 export const fetcher = async (url: string, options?: RequestInit) => {
   const response = await fetch(`${API_URL}${url}`, options);
   const data = await response.json();
