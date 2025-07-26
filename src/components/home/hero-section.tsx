@@ -33,7 +33,7 @@ export function HeroSection() {
               </Button>
             </Link>
 
-            <Link href="/services">
+            <Link href="/service">
               <Button
                 type="default"
                 size="large"
