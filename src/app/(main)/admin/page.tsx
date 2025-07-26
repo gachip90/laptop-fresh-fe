@@ -72,6 +72,12 @@ export default function AdminPage() {
       bgColor: "bg-green-500",
     },
     {
+      title: "Dịch vụ hoạt động",
+      value: `${data?.stats.activeServices || 0}`,
+      icon: <SettingOutlined className="!text-white text-xl" />,
+      bgColor: "bg-purple-500",
+    },
+    {
       title: "Tổng doanh thu",
       value: `${Number(data?.stats.totalRevenue || 0)
         .toLocaleString("vi-VN", {
@@ -81,12 +87,6 @@ export default function AdminPage() {
         .replace(/,/g, ".")}`,
       icon: <BarChartOutlined className="!text-white text-xl" />,
       bgColor: "bg-orange-500",
-    },
-    {
-      title: "Dịch vụ hoạt động",
-      value: `${data?.stats.activeServices || 0}`,
-      icon: <SettingOutlined className="!text-white text-xl" />,
-      bgColor: "bg-purple-500",
     },
   ];
 

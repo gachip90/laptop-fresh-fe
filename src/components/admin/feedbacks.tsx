@@ -6,7 +6,6 @@ import { Card, Spin, Tag } from "antd";
 
 export default function Feedbacks() {
   const { data, error, isLoading } = useSWR("/feedbacks/getAll", fetcher);
-  const { data: usersData } = useSWR("/users/getAll", fetcher);
 
   const getFeedbackTypeInfo = (feedbackType: string) => {
     switch (feedbackType) {
@@ -40,8 +39,8 @@ export default function Feedbacks() {
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>
-      ) : (
-        data?.feedbacks.map((feedback: any) => {
+      ) : data?.feedbacks?.length > 0 ? (
+        data.feedbacks.map((feedback: any) => {
           const typeInfo = getFeedbackTypeInfo(feedback.feedbackType);
           return (
             <div key={feedback.id} className="mb-6">
@@ -59,6 +58,12 @@ export default function Feedbacks() {
             </div>
           );
         })
+      ) : (
+        <div className="bg-white p-6">
+          <div className="text-center text-gray-500">
+            <p className="text-lg mb-2">Chưa có phản hồi!</p>
+          </div>
+        </div>
       )}
     </div>
   );

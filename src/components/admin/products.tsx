@@ -277,7 +277,7 @@ export default function AdminProduct() {
             name="productName"
             rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
           >
-            <Input />
+            <Input placeholder="Nhập tên sản phẩm" />
           </Form.Item>
           <Form.Item
             label={<span className="font-semibold">Danh mục</span>}

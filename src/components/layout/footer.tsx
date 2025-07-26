@@ -32,7 +32,7 @@ export function Footer() {
               <div className="space-y-3">
                 <div>
                   <Link
-                    href="/services"
+                    href="/service"
                     className="!text-gray-600 hover:!text-blue-500 transition-colors duration-200 block"
                   >
                     Dịch vụ
@@ -48,7 +48,7 @@ export function Footer() {
                 </div>
                 <div>
                   <Link
-                    href="/products"
+                    href="/product"
                     className="!text-gray-600 hover:!text-blue-500 transition-colors duration-200 block"
                   >
                     Sản phẩm
@@ -56,10 +56,10 @@ export function Footer() {
                 </div>
                 <div>
                   <Link
-                    href="/news"
+                    href="/blogblog"
                     className="!text-gray-600 hover:!text-blue-500 transition-colors duration-200 block"
                   >
-                    Tin tức
+                    Bài viết
                   </Link>
                 </div>
               </div>

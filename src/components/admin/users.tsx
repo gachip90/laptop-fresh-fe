@@ -25,8 +25,8 @@ export default function AdminUser() {
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>
-      ) : (
-        data?.users
+      ) : data?.users?.filter((user: any) => user.role === "user")?.length > 0 ? (
+        data.users
           .filter((user: any) => user.role === "user")
           .map((user: any) => (
             <div key={user.id} className="mb-6">
@@ -43,6 +43,12 @@ export default function AdminUser() {
               </Card>
             </div>
           ))
+      ) : (
+        <div className="bg-white p-6">
+          <div className="text-center text-gray-500">
+            <p className="text-lg mb-2">Chưa có người dùng!</p>
+          </div>
+        </div>
       )}
     </div>
   );
