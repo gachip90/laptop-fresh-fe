@@ -8,7 +8,6 @@ import {
   Modal,
   Form,
   Input,
-  InputNumber,
   Select,
   message,
   Spin,
@@ -139,6 +138,22 @@ export default function AdminProduct() {
       dataIndex: "category",
       key: "category",
       className: "text-gray-600",
+      render: (category: string) => {
+        const categoryMapping: { [key: string]: string } = {
+          mouse: "Chuột",
+          keyboard: "Bàn phím",
+          monitor: "Màn hình",
+          ssd: "Ổ cứng SSD",
+          ram: "RAM",
+          cpu: "CPU",
+          gpu: "Card đồ họa",
+          motherboard: "Bo mạch chủ",
+          psu: "Nguồn máy tính",
+          case: "Vỏ máy tính",
+          cooling: "Tản nhiệt",
+        };
+        return categoryMapping[category] || category;
+      },
     },
     {
       title: "Giá gốc",
@@ -191,24 +206,12 @@ export default function AdminProduct() {
     },
   ];
 
-  if (error) {
-    return (
-      <div className="bg-white p-6">
-        <div className="text-center text-red-500">
-          Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
-        </div>
-      </div>
-    );
-  }
-
-  const PRODUCT_CATEGORIES = [
-    { value: "laptop", label: "Laptop" },
+  const product_categories = [
     { value: "mouse", label: "Chuột" },
     { value: "keyboard", label: "Bàn phím" },
     { value: "monitor", label: "Màn hình" },
     { value: "ssd", label: "Ổ cứng SSD" },
     { value: "ram", label: "RAM" },
-    { value: "other", label: "Khác" },
   ];
 
   return (
@@ -224,7 +227,13 @@ export default function AdminProduct() {
           Thêm sản phẩm
         </Button>
       </div>
-      {isLoading ? (
+      {error ? (
+        <div className="bg-white p-6">
+          <div className="text-center text-red-500">
+            Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
+          </div>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>
@@ -276,7 +285,7 @@ export default function AdminProduct() {
             rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
           >
             <Select placeholder="Chọn danh mục">
-              {PRODUCT_CATEGORIES.map((cat) => (
+              {product_categories.map((cat) => (
                 <Option key={cat.value} value={cat.value}>
                   {cat.label}
                 </Option>

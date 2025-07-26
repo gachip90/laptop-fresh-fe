@@ -14,19 +14,20 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="vi">
       <body>
+
         <AntdRegistry hashPriority="low">
-          <ConfigProvider
-            theme={{
-              token: {
-                borderRadius: 8,
-                fontFamily: "var(--font-geist-sans)",
-              },
-            }}
-          >
-            {/* <App> */}
-            <main className="min-h-screen">{children}</main>
-            {/* </App> */}
-          </ConfigProvider>
+          <App>
+            <ConfigProvider
+              theme={{
+                token: {
+                  borderRadius: 8,
+                  fontFamily: "var(--font-geist-sans)",
+                },
+              }}
+            >
+              <main className="min-h-screen">{children}</main>
+            </ConfigProvider>
+          </App>
         </AntdRegistry>
       </body>
     </html>

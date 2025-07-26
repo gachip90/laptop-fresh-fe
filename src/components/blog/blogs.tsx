@@ -48,7 +48,7 @@ export function Blogs() {
 
   // Function to handle navigation to blog detail
   const handleReadMore = (slug: string) => {
-    router.push(`/blogs/${slug}`);
+    router.push(`/blog/${slug}`);
   };
 
   // Filter blogs based on active category
@@ -67,134 +67,132 @@ export function Blogs() {
       blog.description.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+  return (
+    <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+      {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="flex justify-center">
             <Spin size="large" />
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+      ) : error ? (
         <div className="flex justify-center items-center h-64">
           <div className="text-lg text-red-600">
             Có lỗi xảy ra khi tải dữ liệu
           </div>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
-      {/* Category Navigation */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {categories.map((category) => (
-          <div
-            key={category.key}
-            onClick={() => setActiveCategory(category.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${activeCategory === category.key
-              ? "bg-blue-500 text-white shadow-lg"
-              : "bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-500"
-              }`}
-          >
-            <span>{category.icon}</span>
-            {category.label}
+      ) : (
+        <>
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-4">
+              Blog & Tin tức
+            </h1>
+            <p className="text-gray-600">
+              Cập nhật những thông tin mới nhất về công nghệ và dịch vụ của chúng tôi
+            </p>
           </div>
-        ))}
-      </div>
 
-      {/* Featured Articles Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          {activeCategory === "all"
-            ? "Tất cả bài viết"
-            : `Bài viết về ${categories.find((cat) => cat.key === activeCategory)?.label
-            }`}
-          {searchValue && ` - Kết quả tìm kiếm: "${searchValue}"`}
-        </h2>
-
-        {searchFilteredBlogs.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-500 text-lg">
-              {searchValue
-                ? "Không tìm thấy bài viết nào phù hợp"
-                : "Chưa có bài viết nào trong danh mục này"}
+          {/* Filters */}
+          <div className="mb-8 flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <Input
+                placeholder="Tìm kiếm bài viết..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                prefix={<SearchOutlined />}
+                className="w-full"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Select
+                value={activeCategory}
+                onChange={setActiveCategory}
+                style={{ width: 150 }}
+              >
+                <Option value="all">Tất cả</Option>
+                <Option value="Bảo dưỡng">Bảo dưỡng</Option>
+                <Option value="Nâng cấp">Nâng cấp</Option>
+                <Option value="Khuyến mãi">Khuyến mãi</Option>
+              </Select>
+              <Option value="Mẹo vặt">Mẹo vặt</Option>
+              <Select
+                value={sortBy}
+                onChange={setSortBy}
+                style={{ width: 150 }}
+              >
+                <Option value="all">Sắp xếp</Option>
+                <Option value="newest">Mới nhất</Option>
+                <Option value="oldest">Cũ nhất</Option>
+              </Select>
             </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          {/* Blog Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {searchFilteredBlogs.map((blog: Blog) => (
               <Card
                 key={blog.id}
-                className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border-0 rounded-xl"
-                styles={{ body: { padding: 0 } }}
+                hoverable
+                className="h-full"
+                cover={
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={blog.image || "/placeholder.svg"}
+                      alt={blog.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute top-2 left-2">
+                      <Tag color="blue">{blog.category}</Tag>
+                    </div>
+                  </div>
+                }
+                actions={[
+                  <Button
+                    key="read"
+                    type="link"
+                    onClick={() => blog.slug && handleReadMore(blog.slug)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    Đọc thêm
+                  </Button>
+                ]}
               >
-                <div className="relative">
-                  <Image
-                    src={blog.image || "/placeholder.svg"}
-                    alt={blog.title}
-                    width={400}
-                    height={200}
-                    className="w-full h-48 object-cover"
-                  />
-                  <Tag
-                    color="blue"
-                    className="absolute top-4 left-5 px-3 py-1 rounded-full font-medium border-0"
-                  >
-                    {blog.category}
-                  </Tag>
-                </div>
-                <div className="p-6">
-                  <h3
-                    className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 hover:text-blue-500 cursor-pointer transition-colors"
-                    onClick={() => handleReadMore(blog.slug)}
-                  >
-                    {blog.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-                    {blog.description}
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <Avatar size="small" icon={<UserOutlined />} />
-                        <span>{blog.author}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CalendarOutlined />
-                        <span>{blog.publishedDate}</span>
+                <Card.Meta
+                  title={
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                      {blog.title}
+                    </h3>
+                  }
+                  description={
+                    <div className="space-y-2">
+                      <p className="text-gray-600 line-clamp-3">
+                        {blog.description}
+                      </p>
+                      <div className="flex items-center text-xs text-gray-500 mt-2">
+                        <div className="flex items-center gap-4 flex-1 justify-center md:justify-start">
+                          <span className="flex items-center gap-1">
+                            <UserOutlined /> {blog.author}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <CalendarOutlined /> {blog.publishedDate}
+                          </span>
+                        </div>
+                        {blog.readTime && (
+                          <span className="flex items-center gap-1 ml-auto">
+                            <ClockCircleOutlined /> {blog.readTime}
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <ClockCircleOutlined />
-                      <span>{blog.readTime}</span>
-                    </div>
-                  </div>
-                  {/* Read More Button */}
-                  <div className="flex justify-center">
-                    <Button
-                      color="blue"
-                      variant="solid"
-                      className="mt-4"
-                      onClick={() => handleReadMore(blog.slug)}
-                    >
-                      Đọc tiếp
-                      <ArrowRightOutlined />
-                    </Button>
-                  </div>
-                </div>
+                  }
+                />
               </Card>
             ))}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

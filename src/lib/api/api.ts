@@ -4,6 +4,7 @@ import {
   LoginData,
   OrderProductData,
   OrderServiceData,
+  ProductData,
   RegisterData,
   ServiceData,
   UserData,
@@ -267,6 +268,27 @@ export const createOrderProduct = async (
 
   if (!res.ok) {
     throw Error(data.message || "Đặt hàng thành công!");
+  }
+
+  return data;
+};
+
+export const updateOrderProduct = async (
+  id: string,
+  orderProductData: OrderProductData
+) => {
+  const res = await fetch(`${API_URL}/orders/products/update/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(orderProductData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw Error(data.message || "Cập nhật đơn đặt hàng thành công!");
   }
 
   return data;

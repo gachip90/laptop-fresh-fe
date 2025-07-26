@@ -147,32 +147,6 @@ export default function Services() {
       key: "location",
       className: "text-gray-600",
     },
-    // {
-    //   title: "Thao tác",
-    //   key: "action",
-    //   render: (_, record) => (
-    //     <Space size="middle">
-    //       <Tooltip title="Chỉnh sửa">
-    //         <Button
-    //           type="text"
-    //           icon={<EditOutlined />}
-    //           onClick={() => handleEdit(record)}
-    //           className="text-gray-500 hover:text-blue-500 hover:bg-blue-50"
-    //         />
-    //       </Tooltip>
-    //       <App>
-    //         <Tooltip title="Xóa">
-    //           <Button
-    //             type="text"
-    //             icon={<DeleteOutlined />}
-    //             onClick={() => handleDelete(record)}
-    //             className="text-gray-500 hover:text-red-500 hover:bg-red-50"
-    //           />
-    //         </Tooltip>
-    //       </App>
-    //     </Space>
-    //   ),
-    // },
     {
       title: "Thao tác",
       key: "action",
@@ -210,16 +184,6 @@ export default function Services() {
     },
   ];
 
-  if (error) {
-    return (
-      <div className="bg-white p-6">
-        <div className="text-center text-red-500">
-          Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white">
       {/* Header */}
@@ -236,7 +200,13 @@ export default function Services() {
       </div>
 
       {/* Table */}
-      {isLoading ? (
+      {error ? (
+        <div className="bg-white p-6">
+          <div className="text-center text-red-500">
+            Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
+          </div>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>

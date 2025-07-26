@@ -48,7 +48,7 @@ export default function BlogDetailPage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back Button */}
         <div className="mb-6">
-          <Link href="/blogs">
+          <Link href="/blog">
             <Button
               icon={<ArrowLeftOutlined />}
               type="text"

@@ -28,3 +28,19 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.header a {
+  color: #374151 !important;
+  /* Tailwind text-gray-700 */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.header a:hover {
+  color: #1677ff !important;
+  /* Tailwind text-blue-500 */
+}
+
+.header a.text-blue-500 {
+  color: #1677ff !important;
+}

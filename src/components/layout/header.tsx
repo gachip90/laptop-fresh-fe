@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+
+import Link from "next/link";
+import Image from "next/image";
+
 import { Button, Drawer, Avatar, Dropdown, Tooltip } from "antd";
 import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -24,10 +26,10 @@ export function Header() {
   // Base menu items
   const baseMenuItems = [
     { key: "/", label: "Trang chủ", href: "/" },
-    { key: "/services", label: "Dịch vụ", href: "/services" },
+    { key: "/service", label: "Dịch vụ", href: "/service" },
     { key: "/booking", label: "Đặt lịch", href: "/booking" },
-    { key: "/products", label: "Sản phẩm", href: "/products" },
-    { key: "/blogs", label: "Bài viết", href: "/blogs" },
+    { key: "/product", label: "Sản phẩm", href: "/product" },
+    { key: "/blog", label: "Bài viết", href: "/blog" },
   ];
 
   // Dynamic menu items based on user role
@@ -66,9 +68,8 @@ export function Header() {
       trigger={["click"]}
     >
       <div
-        className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors ${
-          isMobile ? "w-full justify-start" : ""
-        }`}
+        className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors ${isMobile ? "w-full justify-start" : ""
+          }`}
       >
         <Tooltip>
           <Avatar
@@ -94,9 +95,9 @@ export function Header() {
         <Link
           key={item.key}
           href={item.href}
-          className={`text-gray-700 hover:text-blue-500 transition-colors duration-200 font-medium ${
-            pathname === item.key ? "text-blue-500" : ""
-          }`}
+          className={`font-medium transition-colors duration-200 
+            ${pathname === item.key ? "text-blue-500" : "text-gray-700"}
+            hover:text-blue-500`}
         >
           {item.label}
         </Link>
@@ -111,9 +112,9 @@ export function Header() {
         <Link
           key={item.key}
           href={item.href}
-          className={`text-gray-700 hover:text-blue-500 transition-colors duration-200 font-medium py-2 ${
-            pathname === item.key ? "text-blue-500 font-semibold" : ""
-          }`}
+          className={`font-medium py-2 transition-colors duration-200 
+            ${pathname === item.key ? "text-blue-500 font-semibold" : "text-gray-700"}
+            hover:text-blue-500`}
           onClick={() => setDrawerVisible(false)}
         >
           {item.label}
@@ -142,7 +143,7 @@ export function Header() {
   );
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <header className="header bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

@@ -220,16 +220,6 @@ export default function Blogs() {
     },
   ];
 
-  if (error) {
-    return (
-      <div className="bg-white p-6">
-        <div className="text-center text-red-500">
-          Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white">
       {/* Header */}
@@ -246,7 +236,13 @@ export default function Blogs() {
       </div>
 
       {/* Table */}
-      {isLoading ? (
+      {error ? (
+        <div className="bg-white p-6">
+          <div className="text-center text-red-500">
+            Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
+          </div>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>

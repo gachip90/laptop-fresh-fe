@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import useSWR from "swr";
 import { Button, Radio, message, Card, Modal, Form, Input, Spin } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createOrderProduct, fetcher } from "@/lib/api/api";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
       message.success(
         "Đặt hàng thành công! Đơn hàng sẽ được giao và thanh toán khi nhận hàng."
       );
-      router.push("/products");
+      router.push("/product");
     } catch (err) {
       message.error("Vui lòng nhập đầy đủ thông tin người nhận!");
     } finally {
@@ -162,5 +162,19 @@ export default function CheckoutPage() {
         </Form>
       </Modal>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-2xl mx-auto py-10 px-4">
+        <div className="flex justify-center items-center h-64">
+          <Spin size="large" />
+        </div>
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }

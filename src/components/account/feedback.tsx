@@ -19,7 +19,7 @@ export default function Feedbacks() {
     setLoading(true);
     try {
       if (!isLoggedIn) {
-        message.info("Vui lòng đăng nhập để gửi phản hồi");
+        message.warning("Vui lòng đăng nhập để gửi phản hồi");
         return;
       }
 

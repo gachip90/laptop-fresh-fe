@@ -42,7 +42,6 @@ export default function OrderServices() {
     fetcher
   );
 
-  console.log("data", data);
 
   const handleEdit = (record: OrderServiceData) => {
     setEditingOrderService(record);
@@ -183,16 +182,6 @@ export default function OrderServices() {
     },
   ];
 
-  if (error) {
-    return (
-      <div className="bg-white p-6">
-        <div className="text-center text-red-500">
-          Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white">
       {/* Header */}
@@ -203,14 +192,20 @@ export default function OrderServices() {
       </div>
 
       {/* Table */}
-      {isLoading ? (
+      {error ? (
+        <div className="bg-white p-6">
+          <div className="text-center text-red-500">
+            Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!
+          </div>
+        </div>
+      ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
         </div>
       ) : (
         <Table
           columns={columns}
-          dataSource={data?.orders || []}
+          dataSource={data?.orderService || []}
           pagination={false}
           rowKey={(item: any) => item.id}
           className="bg-white rounded-lg"

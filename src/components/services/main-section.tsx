@@ -46,7 +46,7 @@ export function MainSection() {
   const handleBookingClick = (serviceName: string) => {
     setSelectedService(serviceName);
     if (!isLoggedIn) {
-      message.info("Vui lòng đăng nhập để đặt lịch!");
+      message.warning("Vui lòng đăng nhập để đặt lịch!");
       return;
     } else {
       setIsModalOpen(true);
@@ -78,31 +78,92 @@ export function MainSection() {
   // Map API data to include icons and popular flag
   const servicesWithIcons = data?.services
     ? data.services.map((service: Service) => ({
-        ...service,
-        icon: iconMap[service.serviceName] || defaultIcon,
-        popular: service.serviceName === "Nâng cấp Phần cứng", // Set popular service
-      }))
+      ...service,
+      icon: iconMap[service.serviceName] || defaultIcon,
+      popular: service.serviceName === "Nâng cấp Phần cứng", // Set popular service
+    }))
     : [];
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Spin size="large" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>Lỗi khi tải dữ liệu: {error.message}</div>;
-  }
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {servicesWithIcons.map((service: any, index: number) => (
-          <div key={service.id || index}>
-            {service.popular ? (
-              <Badge.Ribbon text="Phổ biến" color="blue">
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Spin size="large" />
+        </div>
+      ) : error ? (
+        <div>Lỗi khi tải dữ liệu: {error.message}</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {servicesWithIcons.map((service: any, index: number) => (
+            <div key={service.id || index}>
+              {service.popular ? (
+                <Badge.Ribbon text="Phổ biến" color="blue">
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <div className="flex">
+                      <div className="w-12 h-12 bg-blue-100 rounded-md flex items-center justify-center mr-4">
+                        {service.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold mb-2">
+                          {service.serviceName}
+                        </h3>
+                        <p className="text-base text-gray-600">
+                          {service.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between my-4">
+                      <div className="flex gap-16">
+                        <div>
+                          <p className="text-gray-500">Giá dịch vụ:</p>
+                          <p className="text-blue-600 text-lg font-medium">
+                            {service.price}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Thời gian:</p>
+                          <p className="text-lg font-semibold">{service.time}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-500">Địa điểm:</p>
+                        <p className="text-lg font-semibold">
+                          {service.location}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="font-semibold mb-2">Những gì bạn nhận được:</p>
+                    <List
+                      dataSource={service.features || []}
+                      renderItem={(feature: string) => (
+                        <List.Item className="py-1">
+                          <div className="flex items-start">
+                            <CheckCircleFilled
+                              style={{
+                                color: "#52c41a",
+                                marginRight: "8px",
+                                marginTop: "2px",
+                              }}
+                            />
+                            <Typography.Text>{feature}</Typography.Text>
+                          </div>
+                        </List.Item>
+                      )}
+                      className="mb-4"
+                    />
+
+                    <Button
+                      type="primary"
+                      className="bg-blue-500 hover:bg-blue-600 w-full mt-4"
+                      onClick={() => handleBookingClick(service.serviceName)}
+                    >
+                      Đặt lịch ngay
+                    </Button>
+                  </Card>
+                </Badge.Ribbon>
+              ) : (
                 <Card className="hover:shadow-lg transition-shadow">
                   <div className="flex">
                     <div className="w-12 h-12 bg-blue-100 rounded-md flex items-center justify-center mr-4">
@@ -133,9 +194,7 @@ export function MainSection() {
                     </div>
                     <div>
                       <p className="text-gray-500">Địa điểm:</p>
-                      <p className="text-lg font-semibold">
-                        {service.location}
-                      </p>
+                      <p className="text-lg font-semibold">{service.location}</p>
                     </div>
                   </div>
 
@@ -161,80 +220,17 @@ export function MainSection() {
 
                   <Button
                     type="primary"
-                    className="bg-blue-500 hover:bg-blue-600 w-full mt-4"
+                    className="bg-blue-500 hover:bg-blue-600 mt-4 w-full"
                     onClick={() => handleBookingClick(service.serviceName)}
                   >
                     Đặt lịch ngay
                   </Button>
                 </Card>
-              </Badge.Ribbon>
-            ) : (
-              <Card className="hover:shadow-lg transition-shadow">
-                <div className="flex">
-                  <div className="w-12 h-12 bg-blue-100 rounded-md flex items-center justify-center mr-4">
-                    {service.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {service.serviceName}
-                    </h3>
-                    <p className="text-base text-gray-600">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between my-4">
-                  <div className="flex gap-16">
-                    <div>
-                      <p className="text-gray-500">Giá dịch vụ:</p>
-                      <p className="text-blue-600 text-lg font-medium">
-                        {service.price}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Thời gian:</p>
-                      <p className="text-lg font-semibold">{service.time}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">Địa điểm:</p>
-                    <p className="text-lg font-semibold">{service.location}</p>
-                  </div>
-                </div>
-
-                <p className="font-semibold mb-2">Những gì bạn nhận được:</p>
-                <List
-                  dataSource={service.features || []}
-                  renderItem={(feature: string) => (
-                    <List.Item className="py-1">
-                      <div className="flex items-start">
-                        <CheckCircleFilled
-                          style={{
-                            color: "#52c41a",
-                            marginRight: "8px",
-                            marginTop: "2px",
-                          }}
-                        />
-                        <Typography.Text>{feature}</Typography.Text>
-                      </div>
-                    </List.Item>
-                  )}
-                  className="mb-4"
-                />
-
-                <Button
-                  type="primary"
-                  className="bg-blue-500 hover:bg-blue-600 mt-4 w-full"
-                  onClick={() => handleBookingClick(service.serviceName)}
-                >
-                  Đặt lịch ngay
-                </Button>
-              </Card>
-            )}
-          </div>
-        ))}
-      </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <Modal
         open={isModalOpen}
         onCancel={handleModalClose}

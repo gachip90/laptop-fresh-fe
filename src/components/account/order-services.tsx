@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Tag, Card, App, message } from "antd";
+import { Button, Tag, Card, message } from "antd";
 import { useAuth } from "@/hooks/useAuth";
 import useSWR from "swr";
 import {
@@ -9,9 +9,7 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   EnvironmentOutlined,
-  EyeOutlined,
   InfoCircleOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 import { cancelOrderService, fetcher } from "@/lib/api/api";
 import dayjs from "dayjs";
@@ -80,12 +78,12 @@ export default function AccountOrderServices() {
         <h3 className="text-xl font-semibold text-gray-800">
           Lịch sử đặt lịch
         </h3>
-        <span className="text-gray-600">Tổng: {data?.order.length} đơn</span>
+        <span className="text-gray-600">Tổng: {data?.orderService.length} đơn</span>
       </div>
 
-      {(!data?.order || data.order.length === 0) ? (
+      {(!data?.orderService || data.orderService.length === 0) ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <InfoCircleOutlined style={{ fontSize: 48, color: '#aaa' }} />
+          <InfoCircleOutlined style={{ fontSize: 32, color: '#aaa' }} />
           <div className="mt-4 text-lg text-gray-600">Bạn chưa có đơn đặt lịch nào</div>
           <Button
             type="primary"
@@ -97,10 +95,10 @@ export default function AccountOrderServices() {
         </div>
       ) : (
         <div className="space-y-6">
-          {data?.order.map((booking: any) => (
+          {data?.orderService.map((booking: any) => (
             <div key={booking.id} className="mb-6">
               <Card className="shadow-sm border rounded-lg">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-lg font-semibold text-gray-800">
                       Mã đơn: {booking.orderCode}
@@ -113,7 +111,7 @@ export default function AccountOrderServices() {
                 </div>
 
                 <h4 className="text-base font-medium text-gray-800 mb-4">
-                  {booking.title}
+                  {booking.serviceType}
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -146,16 +144,15 @@ export default function AccountOrderServices() {
                 )}
 
                 {booking.status === "pending" && (
-                  <App>
-                    <Button
-                      type="primary"
-                      danger
-                      loading={loading}
-                      onClick={() => handleCancelClick(booking.id)}
-                    >
-                      Hủy đặt lịch
-                    </Button>
-                  </App>
+
+                  <Button
+                    type="primary"
+                    danger
+                    loading={loading}
+                    onClick={() => handleCancelClick(booking.id)}
+                  >
+                    Hủy đặt lịch
+                  </Button>
                 )}
               </Card>
             </div>

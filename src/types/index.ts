@@ -33,6 +33,7 @@ export interface OrderServiceData {
   userId?: string;
   studentId: string;
   email: string;
+  note?: string;
   serviceDetail?: string;
   deviceInfo?: string;
 }
@@ -75,7 +76,7 @@ export interface BlogData {
 }
 
 export interface ProductData {
-  id: string;
+  id?: string;
   productName: string;
   brand: string;
   price: number;
@@ -95,6 +96,7 @@ export interface ProductCategory {
 export interface LoginResponse {
   success: boolean;
   userInfo: {
+    userId: string;
     fullName: string;
     email: string;
     role: "user" | "admin";

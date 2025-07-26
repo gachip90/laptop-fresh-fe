@@ -12,6 +12,7 @@ import {
   Spin,
   Alert,
   Empty,
+  message,
 } from "antd";
 import type { CollapseProps } from "antd";
 import {
@@ -23,6 +24,7 @@ import Image from "next/image";
 import type { Product, ProductCategory } from "@/types";
 import { fetcher } from "@/lib/api/api";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const { Option } = Select;
 
@@ -66,6 +68,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState<string>("newest");
   const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
+  const { user } = useAuth();
 
   // Fetch products data
   const { data, error, isLoading } = useSWR("/products/getAll", fetcher);
@@ -218,45 +221,26 @@ export default function Products() {
 
   // Render Products Grid Content
   const renderProductsContent = () => {
-    // Show loading state for products grid
-    if (isLoading) {
-      return (
-        <div className="flex justify-center items-center py-20">
-          <Spin size="large" />
-        </div>
-      );
-    }
-
-    // Show error state for products grid
-    if (error) {
-      return (
-        <div className="flex justify-center items-center py-20">
-          <Alert
-            message="Lỗi"
-            description="Không thể tải danh sách sản phẩm. Vui lòng thử lại sau."
-            type="error"
-            showIcon
-          />
-        </div>
-      );
-    }
-
-    // Show empty state when no products
-    if (products.length === 0) {
-      return <Empty description="Không có sản phẩm nào" />;
-    }
-
-    // Show empty state when no products match filters
-    if (sortedProducts.length === 0) {
-      return (
-        <div className="text-center py-12">
-          <Empty description="Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn." />
-        </div>
-      );
-    }
-
-    // Show products grid
-    return (
+    return isLoading ? (
+      <div className="flex justify-center items-center py-20">
+        <Spin size="large" />
+      </div>
+    ) : error ? (
+      <div className="flex justify-center items-center py-20">
+        <Alert
+          message="Lỗi"
+          description="Không thể tải danh sách sản phẩm. Vui lòng thử lại sau."
+          type="error"
+          showIcon
+        />
+      </div>
+    ) : products.length === 0 ? (
+      <Empty description="Không có sản phẩm nào" />
+    ) : sortedProducts.length === 0 ? (
+      <div className="text-center py-12">
+        <Empty description="Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn." />
+      </div>
+    ) : (
       <Row gutter={[16, 16]}>
         {sortedProducts.map((product) => (
           <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
@@ -311,9 +295,7 @@ export default function Products() {
                   icon={<ShoppingCartOutlined />}
                   className="w-full mt-3"
                   size="small"
-                  onClick={() =>
-                    router.push(`/checkout?productId=${product.id}`)
-                  }
+                  onClick={() => handleBuyNow(product.id)}
                 >
                   MUA NGAY
                 </Button>
@@ -323,6 +305,12 @@ export default function Products() {
         ))}
       </Row>
     );
+  };
+
+  const handleBuyNow = (productId: string) => {
+    !user
+      ? (message.warning("Vui lòng đăng nhập để mua hàng!"), router.push("/login"))
+      : router.push(`/checkout?productId=${productId}`);
   };
 
   return (
